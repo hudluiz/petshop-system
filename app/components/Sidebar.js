@@ -21,6 +21,16 @@ export default function Sidebar() {
           </li>
         </Link>
 
+<<<<<<< HEAD
+=======
+     
+     <Link href="/pets">
+          <li className="hover:bg-blue-700 p-2 rounded cursor-pointer">
+            Pets
+          </li>
+        </Link>
+
+>>>>>>> 8288df8 (Initial commit)
       </ul>
 
     </div>
