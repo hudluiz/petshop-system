@@ -12,10 +12,6 @@ type Cliente = {
   nome: string;
 };
 
-<<<<<<< HEAD
-export default function Home() {
-  const [totalClientes, setTotalClientes] = useState(0);
-=======
 type Pet = {
   id_pet?: number;
   nome: string;
@@ -24,26 +20,18 @@ type Pet = {
 export default function Home() {
   const [totalClientes, setTotalClientes] = useState(0);
   const [totalPets, setTotalPets] = useState(0);
->>>>>>> 8288df8 (Initial commit)
 
   useEffect(() => {
     async function carregarClientes() {
       try {
         const response = await fetch("http://localhost:3001/clientes");
         const data: Cliente[] = await response.json();
-<<<<<<< HEAD
-        setTotalClientes(data.length);
-=======
         setTotalClientes(Array.isArray(data) ? data.length : 0);
->>>>>>> 8288df8 (Initial commit)
       } catch (error) {
         console.error("Erro ao buscar clientes:", error);
       }
     }
 
-<<<<<<< HEAD
-    carregarClientes();
-=======
     async function carregarPets() {
       try {
         const response = await fetch("http://localhost:3001/pets");
@@ -56,7 +44,6 @@ export default function Home() {
 
     carregarClientes();
     carregarPets();
->>>>>>> 8288df8 (Initial commit)
   }, []);
 
   return (
@@ -85,8 +72,6 @@ export default function Home() {
             </div>
           </Link>
 
-<<<<<<< HEAD
-=======
           <Link href="/pets">
             <div className="bg-white p-6 rounded shadow cursor-pointer hover:shadow-lg hover:bg-gray-50 transition">
               <h2 className="text-gray-500">Pets</h2>
@@ -94,7 +79,6 @@ export default function Home() {
             </div>
           </Link>
 
->>>>>>> 8288df8 (Initial commit)
         </div>
       </div>
     </div>

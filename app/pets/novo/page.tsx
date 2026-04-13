@@ -10,10 +10,11 @@ export default function NovoPet() {
   const [raca, setRaca] = useState("");
   const [porte, setPorte] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
-
-  // 🔍 busca cliente
-  const [buscaCliente, setBuscaCliente] = useState("");
   const [clientes, setClientes] = useState<any[]>([]);
+
+  
+  const [buscaCliente, setBuscaCliente] = useState("");
+  
   const [clienteSelecionado, setClienteSelecionado] = useState<any>(null);
 
   async function buscarClientes(valor: string) {
@@ -127,7 +128,7 @@ export default function NovoPet() {
             onChange={(e) => setPorte(e.target.value)}
           />
 
-          {/* 🆕 DATA NASCIMENTO */}
+        
           <input
             type="date"
             className="border p-2 rounded"
@@ -135,7 +136,7 @@ export default function NovoPet() {
             onChange={(e) => setDataNascimento(e.target.value)}
           />
 
-          {/* 🔥 BUSCA DE CLIENTE */}
+        
           <div className="relative">
             <input
               placeholder="Buscar cliente..."
