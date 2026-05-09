@@ -20,6 +20,7 @@ type Pet = {
 export default function Home() {
   const [totalClientes, setTotalClientes] = useState(0);
   const [totalPets, setTotalPets] = useState(0);
+  const [totalAgendamentos, setTotalAgendamentos] = useState(0);
 
   useEffect(() => {
     async function carregarClientes() {
@@ -42,8 +43,29 @@ export default function Home() {
       }
     }
 
+    async function carregarAgendamentos() {
+
+  try {
+
+    const response = await fetch(
+      "http://localhost:3001/agendamentos"
+    );
+
+    const data = await response.json();
+
+    setTotalAgendamentos(
+      Array.isArray(data) ? data.length : 0
+    );
+
+  } catch (error) {
+
+    console.log(error);
+  }
+}
+
     carregarClientes();
     carregarPets();
+    carregarAgendamentos();
   }, []);
 
   return (
@@ -78,6 +100,20 @@ export default function Home() {
               <p className="text-2xl font-bold">{totalPets}</p>
             </div>
           </Link>
+
+          <Link href="/agendamentos">
+  <div className="bg-white p-6 rounded shadow cursor-pointer hover:shadow-lg hover:bg-gray-50 transition">
+
+    <h2 className="text-gray-500">
+      Agendamentos
+    </h2>
+
+    <p className="text-2xl font-bold">
+      {totalAgendamentos}
+    </p>
+
+  </div>
+</Link>
 
         </div>
       </div>

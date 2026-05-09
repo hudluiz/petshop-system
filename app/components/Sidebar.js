@@ -22,10 +22,16 @@ export default function Sidebar() {
         </Link>
 
 
-     
-     <Link href="/pets">
+
+        <Link href="/pets">
           <li className="hover:bg-blue-700 p-2 rounded cursor-pointer">
             Pets
+          </li>
+        </Link>
+
+        <Link href="/agendamentos">
+          <li className="hover:bg-blue-700 p-2 rounded cursor-pointer">
+            Agendamentos
           </li>
         </Link>
 

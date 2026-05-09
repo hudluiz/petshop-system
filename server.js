@@ -39,10 +39,6 @@ app.post("/clientes", async (req, res) => {
   }
 });
 
-app.listen(3001, () => {
-  console.log("Servidor rodando em http://localhost:3001");
-
-});
 
 app.post("/pets", async (req, res) => {
   try {
@@ -101,5 +97,110 @@ app.get("/clientes/busca", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: error.message });
   }
+
+});
+
+app.get("/agendamentos", async (req, res) => {
+  try {
+
+    const result = await db.query(`
+      SELECT
+        a.*,
+        c.nome AS nome_cliente,
+        p.nome AS nome_pet
+      FROM agendamentos a
+      JOIN clientes c
+        ON c.id = a.id_cliente
+      JOIN pets p
+        ON p.id_pet = a.id_pet
+      ORDER BY a.id_agendamento DESC
+    `);
+
+    res.json(result.rows);
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      error: "Erro ao buscar agendamentos"
+    });
+  }
+});
+
+app.get("/pets/cliente/:id", async (req, res) => {
+
+  try {
+
+    const { id } = req.params;
+
+    const result = await db.query(
+      `
+      SELECT *
+      FROM pets
+      WHERE id_cliente = $1
+      `,
+      [id]
+    );
+
+    res.json(result.rows);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Erro ao buscar pets"
+    });
+  }
+});
+
+app.post("/agendamentos", async (req, res) => {
+
+  try {
+
+    const {
+      id_cliente,
+      id_pet,
+      servico,
+      data_agendamento,
+      hora_agendamento,
+      observacoes
+    } = req.body;
+
+    const novo = await db.query(`
+      INSERT INTO agendamentos
+      (
+        id_cliente,
+        id_pet,
+        servico,
+        data_agendamento,
+        hora_agendamento,
+        observacoes
+      )
+      VALUES ($1,$2,$3,$4,$5,$6)
+      RETURNING *
+    `,
+    [
+      id_cliente,
+      id_pet,
+      servico,
+      data_agendamento,
+      hora_agendamento,
+      observacoes
+    ]);
+
+    res.json(novo.rows[0]);
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Erro ao cadastrar agendamento"
+    });
+  }
+});
+
+app.listen(3001, () => {
+  console.log("Servidor rodando em http://localhost:3001");
 
 });
