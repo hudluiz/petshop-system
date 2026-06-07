@@ -35,6 +35,18 @@ export default function Sidebar() {
           </li>
         </Link>
 
+        <Link href="/servicos">
+          <li className="hover:bg-blue-700 p-2 rounded cursor-pointer">
+            Serviços
+          </li>
+        </Link>
+
+        <Link href="/cobrancas">
+          <li className="hover:bg-blue-700 p-2 rounded cursor-pointer">
+            Cobranças
+          </li>
+        </Link>
+
 
       </ul>
 

@@ -5,12 +5,14 @@ import { useEffect, useState } from "react";
 
 type Agendamento = {
   id_agendamento: number;
-  nome_cliente: string;
-  nome_pet: string;
+  cliente: string;
+  pet: string;
   servico: string;
+  valor: string;
   data_agendamento: string;
   hora_agendamento: string;
   status: string;
+  observacoes?: string;
 };
 
 export default function Agendamentos() {
@@ -24,6 +26,7 @@ export default function Agendamentos() {
       const response = await fetch("http://localhost:3001/agendamentos");
 
       const data = await response.json();
+      console.log(data);
 
       setAgendamentos(Array.isArray(data) ? data : []);
 
@@ -92,8 +95,8 @@ export default function Agendamentos() {
                 className="border-t"
               >
 
-                <td className="p-2">{a.nome_cliente}</td>
-                <td className="p-2">{a.nome_pet}</td>
+                <td className="p-2">{a.cliente}</td>
+                <td className="p-2">{a.pet}</td>
                 <td className="p-2">{a.servico}</td>
                 <td className="p-2">
                   {formatarDataAgendamento(a.data_agendamento)}

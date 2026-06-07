@@ -45,23 +45,23 @@ export default function Home() {
 
     async function carregarAgendamentos() {
 
-  try {
+      try {
 
-    const response = await fetch(
-      "http://localhost:3001/agendamentos"
-    );
+        const response = await fetch(
+          "http://localhost:3001/agendamentos"
+        );
 
-    const data = await response.json();
+        const data = await response.json();
 
-    setTotalAgendamentos(
-      Array.isArray(data) ? data.length : 0
-    );
+        setTotalAgendamentos(
+          Array.isArray(data) ? data.length : 0
+        );
 
-  } catch (error) {
+      } catch (error) {
 
-    console.log(error);
-  }
-}
+        console.log(error);
+      }
+    }
 
     carregarClientes();
     carregarPets();
@@ -102,18 +102,19 @@ export default function Home() {
           </Link>
 
           <Link href="/agendamentos">
-  <div className="bg-white p-6 rounded shadow cursor-pointer hover:shadow-lg hover:bg-gray-50 transition">
+            <div className="bg-white p-6 rounded shadow cursor-pointer hover:shadow-lg hover:bg-gray-50 transition">
 
-    <h2 className="text-gray-500">
-      Agendamentos
-    </h2>
+              <h2 className="text-gray-500">
+                Agendamentos
+              </h2>
 
-    <p className="text-2xl font-bold">
-      {totalAgendamentos}
-    </p>
+              <p className="text-2xl font-bold">
+                {totalAgendamentos}
+              </p>
 
-  </div>
-</Link>
+            </div>
+          </Link>
+         
 
         </div>
       </div>

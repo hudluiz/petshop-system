@@ -14,10 +14,17 @@ type Pet = {
   nome: string;
 };
 
+type Servico = {
+  id_servico: number;
+  nome: string;
+  valor: number;
+};
+
 export default function NovoAgendamento() {
 
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [pets, setPets] = useState<Pet[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([]);
 
   const [buscaCliente, setBuscaCliente] = useState("");
 
@@ -27,7 +34,8 @@ export default function NovoAgendamento() {
   const [petSelecionado, setPetSelecionado] =
     useState("");
 
-  const [servico, setServico] = useState("");
+  const [servicoSelecionado, setServicoSelecionado] =
+    useState("");
 
   const [dataAgendamento, setDataAgendamento] =
     useState("");
@@ -37,6 +45,34 @@ export default function NovoAgendamento() {
 
   const [observacoes, setObservacoes] =
     useState("");
+
+  // =========================
+  // CARREGAR SERVIÇOS
+  // =========================
+
+  useEffect(() => {
+    carregarServicos();
+  }, []);
+
+  async function carregarServicos() {
+    try {
+
+      const response = await fetch(
+        "http://localhost:3001/servicos"
+      );
+
+      const data = await response.json();
+
+      setServicos(Array.isArray(data) ? data : []);
+
+    } catch (error) {
+
+      console.error(
+        "Erro ao carregar serviços:",
+        error
+      );
+    }
+  }
 
   // =========================
   // BUSCAR CLIENTES
@@ -62,6 +98,7 @@ export default function NovoAgendamento() {
       setClientes(Array.isArray(data) ? data : []);
 
     } catch (error) {
+
       console.log(error);
     }
   }
@@ -71,7 +108,7 @@ export default function NovoAgendamento() {
   // =========================
 
   async function selecionarCliente(cliente: Cliente) {
-    console.log(cliente);
+
     setClienteSelecionado(cliente);
 
     setBuscaCliente(cliente.nome);
@@ -92,6 +129,7 @@ export default function NovoAgendamento() {
       setPets(Array.isArray(data) ? data : []);
 
     } catch (error) {
+
       console.log(error);
     }
   }
@@ -116,6 +154,21 @@ export default function NovoAgendamento() {
       return;
     }
 
+    if (!servicoSelecionado) {
+      alert("Selecione um serviço");
+      return;
+    }
+
+    if (!dataAgendamento) {
+      alert("Informe a data");
+      return;
+    }
+
+    if (!horaAgendamento) {
+      alert("Informe a hora");
+      return;
+    }
+
     try {
 
       const response = await fetch(
@@ -133,19 +186,20 @@ export default function NovoAgendamento() {
               clienteSelecionado.id ??
               clienteSelecionado.id_cliente,
 
-            id_pet: petSelecionado,
+            id_pet: Number(petSelecionado),
 
-            servico,
+            id_servico: Number(servicoSelecionado),
 
             data_agendamento: dataAgendamento,
 
             hora_agendamento: horaAgendamento,
 
             observacoes
-
           })
         }
       );
+
+      const data = await response.json();
 
       if (response.ok) {
 
@@ -154,37 +208,35 @@ export default function NovoAgendamento() {
         setBuscaCliente("");
         setClienteSelecionado(null);
 
+        setClientes([]);
         setPets([]);
 
         setPetSelecionado("");
-
-        setServico("");
+        setServicoSelecionado("");
 
         setDataAgendamento("");
-
         setHoraAgendamento("");
 
         setObservacoes("");
 
       } else {
 
-        const erro = await response.json();
-
         alert(
-          erro.error ||
+          data.error ||
           "Erro ao criar agendamento"
         );
       }
 
     } catch (error) {
 
-      console.log(error);
+      console.error(error);
 
       alert("Erro ao conectar backend");
     }
   }
 
   return (
+
     <div className="p-10 bg-gray-100 min-h-screen">
 
       <h1 className="text-3xl font-bold mb-6">
@@ -198,7 +250,7 @@ export default function NovoAgendamento() {
           className="flex flex-col gap-4"
         >
 
-          {/* BUSCA CLIENTE */}
+          {/* CLIENTE */}
 
           <div className="relative">
 
@@ -232,6 +284,7 @@ export default function NovoAgendamento() {
                 ))}
 
               </ul>
+
             )}
 
           </div>
@@ -240,9 +293,7 @@ export default function NovoAgendamento() {
 
           <select
             className="border p-2 rounded"
-
             value={petSelecionado}
-
             onChange={(e) =>
               setPetSelecionado(e.target.value)
             }
@@ -265,15 +316,15 @@ export default function NovoAgendamento() {
 
           </select>
 
-          {/* SERVIÇO */}
+          {/* SERVIÇOS */}
 
           <select
             className="border p-2 rounded"
-
-            value={servico}
-
+            value={servicoSelecionado}
             onChange={(e) =>
-              setServico(e.target.value)
+              setServicoSelecionado(
+                e.target.value
+              )
             }
           >
 
@@ -281,21 +332,16 @@ export default function NovoAgendamento() {
               Selecione o Serviço
             </option>
 
-            <option value="Banho">
-              Banho
-            </option>
+            {servicos.map((servico) => (
 
-            <option value="Tosa">
-              Tosa
-            </option>
+              <option
+                key={servico.id_servico}
+                value={servico.id_servico}
+              >
+                {servico.nome} - R$ {Number(servico.valor).toFixed(2)}
+              </option>
 
-            <option value="Taxi Pet">
-              Taxi Pet
-            </option>
-
-            <option value="Hotel">
-              Hotel
-            </option>
+            ))}
 
           </select>
 
@@ -305,9 +351,15 @@ export default function NovoAgendamento() {
             type="date"
             className="border p-2 rounded"
             value={dataAgendamento}
-            min={new Date().toISOString().split("T")[0]}
+            min={
+              new Date()
+                .toISOString()
+                .split("T")[0]
+            }
             onChange={(e) =>
-              setDataAgendamento(e.target.value)
+              setDataAgendamento(
+                e.target.value
+              )
             }
           />
 
@@ -315,13 +367,12 @@ export default function NovoAgendamento() {
 
           <input
             type="time"
-
             className="border p-2 rounded"
-
             value={horaAgendamento}
-
             onChange={(e) =>
-              setHoraAgendamento(e.target.value)
+              setHoraAgendamento(
+                e.target.value
+              )
             }
           />
 
@@ -329,22 +380,20 @@ export default function NovoAgendamento() {
 
           <textarea
             placeholder="Observações"
-
             className="border p-2 rounded"
-
             value={observacoes}
-
             onChange={(e) =>
-              setObservacoes(e.target.value)
+              setObservacoes(
+                e.target.value
+              )
             }
           />
 
-          {/* BOTÃO */}
-
-          <button className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700">
-
+          <button
+            type="submit"
+            className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+          >
             Salvar Agendamento
-
           </button>
 
         </form>
